@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql/mysql-server:latest
+    container_name: db-mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ROOT_PASSWORD=pass
+      - MYSQL_DATABASE=bookserver
+      - MYSQL_USER=bookserver
+      - MYSQL_PASSWORD=123
+    ports:
+      - '3306:3306'
