@@ -41,7 +41,9 @@ public class ConfiguracaoDeSeguranca {
             http
                     .authorizeRequests()
                     .antMatchers(caminhosPermitidos).permitAll()
-                    .anyRequest().authenticated().and()
+                    .anyRequest()
+                    .authenticated()
+                    .and()
                     .formLogin()
                     .permitAll()
                     .loginPage("/login")
