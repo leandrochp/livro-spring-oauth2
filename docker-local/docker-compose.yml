@@ -1,9 +1,8 @@
 version: '3.8'
 
 services:
-  db:
+  db-bookserver:
     image: mysql/mysql-server:latest
-    container_name: db-mysql
     restart: always
     environment:
       - MYSQL_ROOT_HOST=%
