@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  db-clientapp:
+    image: mysql/mysql-server:latest
+    restart: always
+    environment:
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ROOT_PASSWORD=pass
+      - MYSQL_DATABASE=clientapp
+      - MYSQL_USER=clientapp
+      - MYSQL_PASSWORD=123
+    ports:
+      - '13306:3306'
