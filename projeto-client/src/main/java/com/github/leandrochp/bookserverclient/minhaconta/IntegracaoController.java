@@ -1,6 +1,7 @@
 package com.github.leandrochp.bookserverclient.minhaconta;
 
 import com.github.leandrochp.bookserverclient.configuracao.seguranca.UsuarioLogado;
+import com.github.leandrochp.bookserverclient.integracao.bookserver.AuthorizationCodeTokenService;
 import com.github.leandrochp.bookserverclient.integracao.bookserver.OAuth2Token;
 import com.github.leandrochp.bookserverclient.integracao.bookserver.PasswordTokenService;
 import com.github.leandrochp.bookserverclient.usuarios.AcessoBookserver;
@@ -19,25 +20,44 @@ import org.springframework.web.servlet.ModelAndView;
 public class IntegracaoController {
 
     @Autowired
+    private UsuariosRepository usuarios;
+
+    @Autowired
     private PasswordTokenService passwordTokenService;
 
     @Autowired
-    private UsuariosRepository usuarios;
+    private AuthorizationCodeTokenService authorizationCodeTokenService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView integracao() {
-        return new ModelAndView("minhaconta/integracao");
+        String endpointDeAutorizacao = authorizationCodeTokenService.getAuthorizationEndpoint();
+        return new ModelAndView("redirect:" + endpointDeAutorizacao);
+        // grant type Resource Source Password Credentials
+        // return new ModelAndView("minhaconta/integracao");
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/callback")
+    public ModelAndView callback(String code, String state) {
+        OAuth2Token token = authorizationCodeTokenService.getToken(code);
+
+        AcessoBookserver acessoBookserver = new AcessoBookserver();
+        acessoBookserver.setAccessToken(token.getAccessToken());
+
+        Usuario usuario = usuarioLogado();
+        usuario.setAcessoBookserver(acessoBookserver);
+        usuarios.save(usuario);
+
+        return new ModelAndView("redirect:/minhaconta/principal");
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ModelAndView autorizar(Autorizacao autorizacao) {
-        Usuario usuario = usuarioLogado();
-
         OAuth2Token token = passwordTokenService.getToken(autorizacao.getLogin(), autorizacao.getSenha());
 
         AcessoBookserver acessoBookserver = new AcessoBookserver();
         acessoBookserver.setAccessToken(token.getAccessToken());
 
+        Usuario usuario = usuarioLogado();
         usuario.setAcessoBookserver(acessoBookserver);
         usuarios.save(usuario);
 
