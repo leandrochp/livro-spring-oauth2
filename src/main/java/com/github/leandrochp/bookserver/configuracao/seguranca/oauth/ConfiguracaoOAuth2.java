@@ -33,7 +33,8 @@ public class ConfiguracaoOAuth2 {
                     .authenticated()
                     .and()
                     .requestMatchers()
-                    .antMatchers("/api/v2/**");
+                    .antMatchers("/api/v2/**").and()
+                    .cors();
         }
     }
 
@@ -49,7 +50,7 @@ public class ConfiguracaoOAuth2 {
             clients.inMemory()
                     .withClient("cliente-app")
                     .secret("123456")
-                    .authorizedGrantTypes("password", "authorization_code")
+                    .authorizedGrantTypes("password", "authorization_code", "implicit")
                     .scopes("read", "write")
                     .resourceIds(RESOURCE_ID);
         }
@@ -60,4 +61,3 @@ public class ConfiguracaoOAuth2 {
         }
     }
 }
-
