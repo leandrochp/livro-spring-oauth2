@@ -2,6 +2,7 @@ package com.github.leandrochp.bookserverclient.minhaconta;
 
 import com.github.leandrochp.bookserverclient.configuracao.seguranca.UsuarioLogado;
 import com.github.leandrochp.bookserverclient.integracao.bookserver.AuthorizationCodeTokenService;
+import com.github.leandrochp.bookserverclient.integracao.bookserver.ImplicitTokenService;
 import com.github.leandrochp.bookserverclient.integracao.bookserver.OAuth2Token;
 import com.github.leandrochp.bookserverclient.integracao.bookserver.PasswordTokenService;
 import com.github.leandrochp.bookserverclient.usuarios.AcessoBookserver;
@@ -28,12 +29,25 @@ public class IntegracaoController {
     @Autowired
     private AuthorizationCodeTokenService authorizationCodeTokenService;
 
+    @Autowired
+    private ImplicitTokenService implicitTokenService;
+
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView integracao() {
-        String endpointDeAutorizacao = authorizationCodeTokenService.getAuthorizationEndpoint();
-        return new ModelAndView("redirect:" + endpointDeAutorizacao);
+        String endpointDeAutorizacao = implicitTokenService.getAuthorizationEndpoint();
+        return  new ModelAndView("redirect:" + endpointDeAutorizacao);
+
+        // grant type Authorization Code
+        // String endpointDeAutorizacao = authorizationCodeTokenService.getAuthorizationEndpoint();
+        // return new ModelAndView("redirect:" + endpointDeAutorizacao);
+
         // grant type Resource Source Password Credentials
-        // return new ModelAndView("minhaconta/integracao");
+        // return new ModelAndView("/minhaconta/integracao");
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/implicit")
+    public ModelAndView implicit() {
+        return new ModelAndView("/minhaconta/bookserver");
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/callback")
