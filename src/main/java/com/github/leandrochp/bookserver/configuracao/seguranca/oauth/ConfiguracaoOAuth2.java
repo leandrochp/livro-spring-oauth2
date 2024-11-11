@@ -52,6 +52,12 @@ public class ConfiguracaoOAuth2 {
                     .secret("123456")
                     .authorizedGrantTypes("password", "authorization_code", "implicit")
                     .scopes("read", "write")
+                    .resourceIds(RESOURCE_ID)
+                    .and()
+                    .withClient("cliente-admin")
+                    .secret("123abc")
+                    .authorizedGrantTypes("client_credentials")
+                    .scopes("read")
                     .resourceIds(RESOURCE_ID);
         }
 
