@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -11,6 +12,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 
 @Configuration
 public class ConfiguracaoOAuth2 {
@@ -45,14 +48,22 @@ public class ConfiguracaoOAuth2 {
         @Autowired
         private AuthenticationManager authenticationManager;
 
+        @Autowired
+        private UserDetailsService userDetailsService;
+
+        @Autowired
+        private ClientDetailsService clientDetailsService;
+
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
             clients.inMemory()
                     .withClient("cliente-app")
                     .secret("123456")
-                    .authorizedGrantTypes("password", "authorization_code", "implicit")
+                    .authorizedGrantTypes("password", "authorization_code", "implicit", "refresh_token")
+                    .accessTokenValiditySeconds(120)
                     .scopes("read", "write")
                     .resourceIds(RESOURCE_ID)
+                    .authorities("read", "write")
                     .and()
                     .withClient("cliente-admin")
                     .secret("123abc")
@@ -62,8 +73,12 @@ public class ConfiguracaoOAuth2 {
         }
 
         @Override
-        public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-            endpoints.authenticationManager(authenticationManager);
+        public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+            DefaultOAuth2RequestFactory factory = new DefaultOAuth2RequestFactory(clientDetailsService);
+            factory.setCheckUserScopes(true);
+
+            endpoints.authenticationManager(authenticationManager).userDetailsService(userDetailsService);
         }
     }
 }
+

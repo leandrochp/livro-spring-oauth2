@@ -7,6 +7,7 @@ import com.github.leandrochp.bookserver.usuarios.Usuarios;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,6 +23,7 @@ public class LivrosApiController {
     private Usuarios usuarios;
 
     @CrossOrigin
+    @PreAuthorize(value = "#oauth2.hasScope('read') and hasRole('ROLE_USUARIO_COMUM')")
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> livros() {
 
