@@ -34,15 +34,16 @@ public class IntegracaoController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView integracao() {
-        String endpointDeAutorizacao = implicitTokenService.getAuthorizationEndpoint();
-        return  new ModelAndView("redirect:" + endpointDeAutorizacao);
+        // grant type Implicit
+        //String endpointDeAutorizacao = implicitTokenService.getAuthorizationEndpoint();
+        //return  new ModelAndView("redirect:" + endpointDeAutorizacao);
 
         // grant type Authorization Code
-        // String endpointDeAutorizacao = authorizationCodeTokenService.getAuthorizationEndpoint();
-        // return new ModelAndView("redirect:" + endpointDeAutorizacao);
+        String endpointDeAutorizacao = authorizationCodeTokenService.getAuthorizationEndpoint();
+        return new ModelAndView("redirect:" + endpointDeAutorizacao);
 
         // grant type Resource Source Password Credentials
-        // return new ModelAndView("/minhaconta/integracao");
+        //return new ModelAndView("/minhaconta/integracao");
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/implicit")
@@ -52,16 +53,7 @@ public class IntegracaoController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/callback")
     public ModelAndView callback(String code, String state) {
-        OAuth2Token token = authorizationCodeTokenService.getToken(code);
-
-        AcessoBookserver acessoBookserver = new AcessoBookserver();
-        acessoBookserver.setAccessToken(token.getAccessToken());
-
-        Usuario usuario = usuarioLogado();
-        usuario.setAcessoBookserver(acessoBookserver);
-        usuarios.save(usuario);
-
-        return new ModelAndView("redirect:/minhaconta/principal");
+        return new ModelAndView("forward:/minhaconta/principal");
     }
 
     @RequestMapping(method = RequestMethod.POST)

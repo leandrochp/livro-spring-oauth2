@@ -1,6 +1,5 @@
 package com.github.leandrochp.bookserverclient.minhaconta;
 
-
 import com.github.leandrochp.bookserverclient.configuracao.seguranca.UsuarioLogado;
 import com.github.leandrochp.bookserverclient.integracao.bookserver.BookserverService;
 import com.github.leandrochp.bookserverclient.integracao.bookserver.UsuarioSemAutorizacaoException;
