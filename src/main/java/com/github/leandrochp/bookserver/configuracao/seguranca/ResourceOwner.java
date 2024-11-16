@@ -61,4 +61,8 @@ public class ResourceOwner implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public String getName() {
+        return usuario.getNome();
+    }
 }
